@@ -4,7 +4,9 @@ export default gql`
   query GetUserSites {
     getUserSites{
       url,
-      id
+      id,
+      status,
+      expirationDate
     }
   }
 `;

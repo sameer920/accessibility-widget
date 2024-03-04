@@ -34,19 +34,6 @@ interface finalOutput {
     totalElements: number
 }
 
-const output: finalOutput = {
-    axe: {
-        errors: [],
-        notices: [],
-        warnings: []
-    },
-    htmlcs: {
-        errors: [],
-        notices: [],
-        warnings: []
-    },
-    totalElements: 0
-}
 
 function createAxeArrayObj(message: string, issue: any) {
     const obj: axeOutput = {
@@ -76,33 +63,47 @@ function calculateAccessibilityScore(issues: { errors: axeOutput[], warnings: ax
 
     issues.errors.forEach(issue => {
         const impactWeight = impactWeights[issue.impact.toLowerCase()] || 0;
-        score += issueWeights["error"] * impactWeight * issue.selectors.length;
+        score += issueWeights["error"] * impactWeight 
     });
 
     issues.warnings.forEach(issue => {
         const impactWeight = impactWeights[issue.impact.toLowerCase()] || 0;
-        score += issueWeights["warning"] * impactWeight * issue.selectors.length;
+        score += issueWeights["warning"] * impactWeight 
     });
 
     issues.notices.forEach(issue => {
         const impactWeight = impactWeights[issue.impact.toLowerCase()] || 0;
-        score += issueWeights["notice"] * impactWeight * issue.selectors.length;
+        score += issueWeights["notice"] * impactWeight ;
     });
-
     // Normalize the score to a maximum of 70%
     const maxScore = 70;
-    return Math.min(score, maxScore);
+    return Math.min(Math.floor(score), maxScore);
 }
 
 
 export async function getAccessibilityInformationPally(domain: string) {
+    const output: finalOutput = {
+        axe: {
+            errors: [],
+            notices: [],
+            warnings: []
+        },
+        htmlcs: {
+            errors: [],
+            notices: [],
+            warnings: []
+        },
+        totalElements: 0
+    }
+    
     const results = await pa11y(domain, {
         includeNotices: true,
         includeWarnings: true,
         runners: [
             'axe',
             'htmlcs'
-        ]
+        ],
+        // screenCapture: `${__dirname}/pallycaptures/${domain}.png`
     });
 
     results.issues.forEach((issue: any) => {
@@ -168,7 +169,7 @@ export async function getAccessibilityInformationPally(domain: string) {
                 }
             }
             else if (issue.type === 'warning') {
-                const warningIndex = output.axe.warnings.findIndex(warning => warning.message === issue.message);
+                const warningIndex = output.htmlcs.warnings.findIndex(warning => warning.message === issue.message);
                 if (warningIndex === -1) {
                     const obj: htmlcsOutput = createHtmlcsArrayObj(issue);
                     output.htmlcs.warnings.push(obj);

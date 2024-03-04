@@ -26,6 +26,7 @@ interface siteDetails {
 const AdminLayout: React.FC<Props> = ({ signout, options }) => {
   const [reloadSites, setReloadSites] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Select a Domain');
+  const [selectedStatus, setSelectedStatus] = useState('Inactive');
   const { data, refetch } = useQuery(getSites);
 
 
@@ -43,9 +44,11 @@ const AdminLayout: React.FC<Props> = ({ signout, options }) => {
     if (data) {
       if (data.getUserSites.length > 0) {
         setSelectedOption(data.getUserSites[0].url);
+        setSelectedStatus(data.getUserSites[0].status);
       }
       else {
-        setSelectedOption('Add a new Domain')
+        setSelectedOption('Add a new Domain');
+        setSelectedStatus('Add a Domain First.');
       }
     }
   }, [data])
@@ -54,7 +57,7 @@ const AdminLayout: React.FC<Props> = ({ signout, options }) => {
   return (
 
     <div className="flex">
-      <Sidebar options={data} setReloadSites={setReloadSites} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+      <Sidebar options={data} setReloadSites={setReloadSites} selectedOption={selectedOption} setSelectedOption={setSelectedOption} setSelectedStatus={setSelectedStatus} />
       <div className="flex flex-col flex-grow">
         <Topbar signout={signout} />
         <div className="flex-grow bg-body overflow-y-auto px-[15px] py-[32px] sm:min-h-[calc(100vh_-_64px)]">
@@ -67,7 +70,7 @@ const AdminLayout: React.FC<Props> = ({ signout, options }) => {
                 exact={route.exact}
               />
             ))}
-            <Route path='/dashboard' render={() => <Dashboard domain={selectedOption} />} key='/dashboard' exact={false} />
+            <Route path='/dashboard' render={() => <Dashboard domain={selectedOption} domainStatus={selectedStatus}/>} key='/dashboard' exact={false} />
             <Route path='/add-domain' render={() => <Teams domains={data} setReloadSites={setReloadSites} /> } key='/Add-Domain' exact={false} />
             <Route path='/installation' render={() => <Installation domain={selectedOption} />} key='/installation' exact={false} />
             <Redirect from="*" to="/dashboard" />

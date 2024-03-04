@@ -13,7 +13,7 @@ const AccessibilityScoreCard: React.FC<AccessibilityScoreCardProps> = ({ score }
 
   return (
     <div className="accessibility-card">
-      <div className="card-header">Accessibility Score</div>
+      <h3 className='text-center font-bold text-sapphire-blue text-lg mb-3'>Accessibility Score</h3>
       <div className='mb-8 mt-5'>
         <CircularProgressWithLabel value={score} size={110} />
       </div>

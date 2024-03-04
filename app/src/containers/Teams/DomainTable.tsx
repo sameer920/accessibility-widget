@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 const DomainTable = ({ data, setReloadSites}: any) => {
   const [domains, setDomains] = useState([
-    { id: 0, url: '', expiration: '', status: '' }
+    { id: 0, url: '', expirationDate: '', status: '' }
   ]);
 
   const [deleteSiteMutation] = useMutation(deleteSite, {
@@ -135,7 +135,7 @@ const DomainTable = ({ data, setReloadSites}: any) => {
                       <p className={`p-1.5 text-xs font-semibold rounded w-fit whitespace-no-wrap ${applyStatusClass(domain.status)}`}>{domain.status}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-light-grey bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{domain.expiration}</p>
+                      <p className="text-gray-900 whitespace-no-wrap">{domain.expirationDate}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-light-grey bg-white text-sm text-right">
                       {editingId === domain.id ? (

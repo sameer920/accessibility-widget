@@ -8,10 +8,12 @@ import AddDomainModal from './AddDomainModal'
 
 interface siteDetails {
   url: string,
-  id: number | string | null | undefined
+  id: number | string | null | undefined,
+  status: string,
+  expirtationDate: string | undefined | null
 }
 
-const DropDown = ({ data, setReloadSites, selectedOption, setSelectedOption }: any) => {
+const DropDown = ({ data, setReloadSites, selectedOption, setSelectedOption, setSelectedStatus }: any) => {
 
   // const [selectedOption, setSelectedOption] = useState<string>('Select a Domain');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -65,10 +67,14 @@ const DropDown = ({ data, setReloadSites, selectedOption, setSelectedOption }: a
                 className="dropdown-item flex justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                 role="menuitem"
                 tabIndex={0}
-                onClick={() => handleOptionClick(site.url)}
+                onClick={() => {
+                  handleOptionClick(site.url);
+                  setSelectedStatus(site.status)
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     handleOptionClick(site.url);
+                    setSelectedStatus(site.status);
                   }
                 }}
               >

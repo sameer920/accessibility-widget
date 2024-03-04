@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getAccessibilityInformationPally } from '~/helpers/accessibility.helper';
 import logger from '~/utils/logger';
-const { GraphQLJSON } = require('graphql-type-json');
 
 interface Status {
     success: boolean;
@@ -120,38 +119,7 @@ export const fetchAccessibilityReport = async (url: string) => {
 
     } catch (error) {
         logger.error(error);
-        throw new Error(`${error} Error fetching data from WebAIM API `);
+        throw new Error(`${error} Error while running accessibility report `);
     }
 };
 
-// example usage:
-
-// query GetAccessibilityReport {
-//     getAccessibilityReport(url: "https://example.com") {
-//       status {
-//         success
-//         httpstatuscode
-//       }
-//       statistics {
-//         pagetitle
-//         pageurl
-//         time
-//         creditsremaining
-//         allitemcount
-//         totalelements
-//         waveurl
-//       }
-//       categories {
-//         description
-//         count
-//         items {
-//           id
-//           description
-//           count
-//           xpaths
-//           contrastdata
-//           selectors
-//         }
-//       }
-//     }
-//   }

@@ -15,7 +15,7 @@ import Dropdown from '@/containers/Dashboard/DropDown';
 
 
 
-const Sidebar = ({ options, setReloadSites, selectedOption, setSelectedOption }: any) => {
+const Sidebar = ({ options, setReloadSites, selectedOption, setSelectedOption, setSelectedStatus }: any) => {
 
 
   const dispatch = useDispatch();
@@ -80,7 +80,7 @@ const Sidebar = ({ options, setReloadSites, selectedOption, setSelectedOption }:
         </a>
         <div className="flex-grow">
           <div className="mb-2 w-full pl-[27px] border-l-2 border-solid border-transparent flex items-center [&.active]:rounded-r-[10px] [&.active]:rounded-b-[10px] [&.active]:rounded-t-[0px] [&.active]:rounded-l-[0px] [&.active]:bg-regular-primary [&.active]:border-primary [&.active>.menu-text]:text-primary [&.active>.menu-text]:font-medium [&.active>svg_*[fill]]:fill-primary [&.active>svg_*[stroke]]:stroke-primary">
-            <Dropdown data={options} setReloadSites={setReloadSites} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+            <Dropdown data={options} setReloadSites={setReloadSites} selectedOption={selectedOption} setSelectedOption={setSelectedOption} setSelectedStatus={setSelectedStatus}/>
           </div>
           <ul className="p-0 pr-[14px]">
             <li key='/dashboard' className="h-[60px] flex items-center">

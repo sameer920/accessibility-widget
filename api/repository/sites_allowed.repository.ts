@@ -11,6 +11,8 @@ export const siteColumns = {
 	url: 'allowed_sites.url',
 	createAt: 'allowed_sites.created_at',
 	updatedAt: 'allowed_sites.updated_at',
+	expirationDate:'allowed_sites.expirationDate',
+	status: 'allowed_sites.status'
 
 };
 
@@ -20,12 +22,16 @@ export type FindAllowedSitesProps = {
 	url?: string,
 	createAt?: string,
 	updatedAt?: string,
+	status?: string,
+	expirationDate?:string
 };
 
 export type allowedSites = {
 	id?: number;
 	user_id?: number
 	url?: string,
+	status?: string,
+	expirationDate?:string
 };
 
 export async function findSitesByUserId(id: number): Promise<FindAllowedSitesProps[]> {

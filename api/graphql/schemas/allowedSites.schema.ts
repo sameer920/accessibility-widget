@@ -8,6 +8,8 @@ export const AllowedSitesSchema = gql`
 				url: String
 				updatedAt: String
 				createAt: String
+				status: String
+				expirationDate: String
 		}
 
 		type siteUpdateResponse{

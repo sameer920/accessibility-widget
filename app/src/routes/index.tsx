@@ -67,7 +67,7 @@ const routes = [
   },
   {
     path:'/accessibility-test',
-    name:'Accessibility',
+    name:'Ability Scan',
     exact:true,
     component: Accessibility,
     icon: <AccessibilityIcon />,

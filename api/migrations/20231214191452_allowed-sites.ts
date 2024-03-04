@@ -11,6 +11,9 @@ export function up(knex: Knex): Knex.SchemaBuilder {
 		t.dateTime('updated_at')
 			.notNullable()
 			.defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+		t.string('status')
+			.defaultTo('Inactive');
+		t.string('expirationDate');
 		t.foreign('user_id').references('id').inTable('users');
 	});
 }

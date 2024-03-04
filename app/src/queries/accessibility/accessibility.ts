@@ -43,12 +43,16 @@ export default gql`
           message
           context
           selectors
+          description
+          recommended_action
         }
         warnings {
           code
           message
           context
           selectors
+          description
+          recommended_action
         }
       }
       score

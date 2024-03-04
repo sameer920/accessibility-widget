@@ -1,8 +1,7 @@
 import { ApolloError, ValidationError } from 'apollo-server-express';
 
 import logger from '~/utils/logger';
-import { insertDocument, findDocumentById, findDocuments, updateDocumentById, deleteDocumentById, FindDocumentsResponse, FindDocumentById } from '~/repository/documents.repository';
-import { FindAllowedSitesProps, deleteSiteByURL, findSiteByURL, findSitesByUserId, insertSite, updateAllowedSiteURL} from '~/repository/sites_allowed.repository';
+import { FindAllowedSitesProps, deleteSiteByURL, findSiteByURL, findSitesByUserId, insertSite, updateAllowedSiteURL } from '~/repository/sites_allowed.repository';
 import { createValidation } from '~/validations/document.validation';
 
 // type GetDocumentsResponse = {
@@ -17,27 +16,32 @@ import { createValidation } from '~/validations/document.validation';
  * @param {string} url
  */
 export async function addSite(userId: number, url: string): Promise<string> {
-//   const validateResult = createValidation({ name, body });
-//   if (Array.isArray(validateResult) && validateResult.length) {
-//     throw new ValidationError(validateResult.map((it) => it.message).join(','));
-//   }
+    //   const validateResult = createValidation({ name, body });
+    //   if (Array.isArray(validateResult) && validateResult.length) {
+    //     throw new ValidationError(validateResult.map((it) => it.message).join(','));
+    //   }
 
-  try {
-    const data = {
-        user_id: userId,
-        url: url
+    try {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+
+        const data = {
+            user_id: userId,
+            url: url,
+            status: 'Inactive',
+            expirationDate: formattedDate
+        }
+        const response = await insertSite(data);
+        return response
+
+        // const data = await insertDocument({ name, body, user_id: userId });
+        // const newDocumentId = data.shift();
+        // const document = await findDocumentById(newDocumentId);
+        // return document;
+    } catch (error) {
+        logger.error(error);
+        throw error;
     }
-    const response = await insertSite(data);
-    return response
-    
-    // const data = await insertDocument({ name, body, user_id: userId });
-    // const newDocumentId = data.shift();
-    // const document = await findDocumentById(newDocumentId);
-    // return document;
-  } catch (error) {
-    logger.error(error);
-    throw error;
-  }
 }
 
 /**
@@ -48,46 +52,46 @@ export async function addSite(userId: number, url: string): Promise<string> {
  *
  */
 
-export async function findUserSites(userId:number): Promise<FindAllowedSitesProps[]> {
-    try{
+export async function findUserSites(userId: number): Promise<FindAllowedSitesProps[]> {
+    try {
         const sites = await findSitesByUserId(userId);
         return sites;
     }
-    catch(e){
+    catch (e) {
         logger.error(e)
         throw e
     }
 }
 
-export async function findSite(url: string){
-    try{
-        const site = await findSiteByURL( url);
+export async function findSite(url: string) {
+    try {
+        const site = await findSiteByURL(url);
         return site;
     }
-    catch (e){
+    catch (e) {
         logger.error(e);
         throw e;
     }
 }
 
-export async function deleteSite(userId:number, url:string) {
-    try{
+export async function deleteSite(userId: number, url: string) {
+    try {
         const deletedRecs = await deleteSiteByURL(url, userId);
         return deletedRecs;
     }
-    catch (e){
+    catch (e) {
         logger.error(e);
         throw e;
     }
 }
 
-export async function changeURL(siteId: number, userId: number ,url: string) {
-    try{
+export async function changeURL(siteId: number, userId: number, url: string) {
+    try {
         const x = await updateAllowedSiteURL(siteId, url, userId);
         if (x > 0) return 'Successfully updated URL'
         else return 'Could not change URL'
     }
-    catch (e){
+    catch (e) {
         logger.error(e);
         throw e;
     }

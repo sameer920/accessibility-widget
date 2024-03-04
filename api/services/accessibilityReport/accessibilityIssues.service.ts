@@ -28,9 +28,10 @@ async function getIssueDescription(issues: any) {
             description: string that you will generate. a couple of sentence detailing what the issue is and what impact it has on the users. Maybe add an example of alleviating the issue, but make the example general purpose,
             recommended_action: How can one fix this issue. General purpose recommendation,
             affectedDisabilities: [people with which disabilities will be impacted by this e.g blind,deaf],
-            code: wcag code provided to you
+            code: The WCAG code number and it's description based on the WCAG code provided to you e.g 1.4.3 Contrast (Minimum)
             
         }]
+        Try to return in ascending order of code.
         remember to just return a json with this information only. No introduction or conclusion paragraphs are required, just the json. Remember to cover all the issues.
         `},
         { role: 'user', content: JSON.stringify(issues) }
@@ -46,16 +47,17 @@ async function addAccessibilityIssuesToDB(issue: dbIssue) {
 
 const updateIssueDetails = (matchedRecords: dbIssue[], issueList: any[]) => {
     return issueList.map((issue) => {
-        const matchedRecord = matchedRecords.find(record => record.heading === issue.message);
+        const matchedRecord = matchedRecords.find(record => record.heading === issue.message.replace(/Recommendation:.*$/, '').trim());
         if (matchedRecord) {
             issue.description = matchedRecord.description;
             issue.recommended_action = matchedRecord.recommended_action;
+            issue.code = matchedRecord.code;
         }
         return issue;
     });
 };
 
-async function populateMissingDescriptions(matchedRecords: dbIssue[], issueHeadings: any, type:string) {
+async function populateMissingDescriptions(matchedRecords: dbIssue[], issueHeadings: any, type: string) {
     console.log(type)
     const notFoundIssues = issueHeadings.filter((message: any) => {
         return !matchedRecords.some(record => record.heading === message);
@@ -74,9 +76,11 @@ async function populateMissingDescriptions(matchedRecords: dbIssue[], issueHeadi
 
 export async function readAccessibilityDescriptionFromDb(issues: any) {
     try {
-        const errorHeadings = issues.errors.map((issue: any) => issue.message);
-        const warningHeadings = issues.warnings.map((issue: any) => issue.message);
-        const noticesHeadings = issues.notices.map((issue: any) => issue.message);
+        /*Sometimes the htmlcs runner returns a recommendation and that might be different for different sites so it's removed here
+        in order to increased chances of description matches in the db and thereby reduce calls to openai api. */
+        const errorHeadings = issues.errors.map((issue: any) => issue.message.replace(/Recommendation:.*$/, '').trim());
+        const warningHeadings = issues.warnings.map((issue: any) => issue.message.replace(/Recommendation:.*$/, '').trim());
+        const noticesHeadings = issues.notices.map((issue: any) => issue.message.replace(/Recommendation:.*$/, '').trim());
         const headings = [...errorHeadings, ...warningHeadings, ...noticesHeadings];
         let matchedRecords = await getAccessibilityDescription(headings);
 
@@ -90,10 +94,10 @@ export async function readAccessibilityDescriptionFromDb(issues: any) {
         if (added) {
             matchedRecords = await getAccessibilityDescription(headings);
         }
-
         issues.errors = updateIssueDetails(matchedRecords, issues.errors);
         issues.warnings = updateIssueDetails(matchedRecords, issues.warnings);
         issues.notices = updateIssueDetails(matchedRecords, issues.notices);
+        console.log(issues.warnings);
         return issues;
 
     } catch (error) {

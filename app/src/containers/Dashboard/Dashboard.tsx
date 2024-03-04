@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import fetchDashboardQuery from '@/queries/dashboard/fetchDashboardQuery';
 import { useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
+import { IoRefresh } from "react-icons/io5";
 import DashboardCard from './DashboardCard';
 import ExportButton from './ExportButton';
 import DropdownSelector from './DropdownSelector';
@@ -31,7 +32,7 @@ interface CardData {
 
 
 
-const Dashboard: React.FC<any> = ({ domain }: any) => {
+const Dashboard: React.FC<any> = ({ domain, domainStatus }: any) => {
 
   const [startDate, setStartDate] = useState<string>();
   const [endDate, setEndDate] = useState<string>();
@@ -208,27 +209,16 @@ const Dashboard: React.FC<any> = ({ domain }: any) => {
             <button
               type="button"
               className="button-class mt-5"
-              onClick={() => console.log('Button clicked')}
-              aria-label="Add"
+              onClick={() => refetch()}
+              aria-label="Refresh button"
             >
-              {/* SVG for plus button */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
+              <IoRefresh />
             </button>
 
-            <ExportButton />
+            <span>
+              <h3 className='text-lg text-gray-600 font-semibold ml-1'>License Status: </h3>
+              <span className={`p-1 ${domainStatus === 'Active' ? 'text-green-600 bg-green-300' : 'text-red-800 bg-red-200'}`}>{domainStatus}</span>
+            </span>
             {/* <DropdownSelector granularity={granularity} setGranularity={setGranularity} /> */}
             <DropdownSelector
               granularity={granularity}
@@ -270,7 +260,7 @@ const Dashboard: React.FC<any> = ({ domain }: any) => {
           <div>
             <CustomChart data={chartData} />
           </div>
-        </div>
+        </div >
       }
     </>
   );
