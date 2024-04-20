@@ -11,7 +11,7 @@ export const impressionsColumns = {
 	widget_opened: 'impressions.widget_opened',
 	widget_closed: 'impressions.widget_closed',
 	createdAt: 'impressions.created_at',
-
+	profileCounts: 'impressions.profileCounts',
 };
 
 type impressionsProps = {
@@ -20,7 +20,8 @@ type impressionsProps = {
 	visitor_id?: number,
 	widget_opened?: boolean,
 	widget_closed?: boolean,
-	createdAt?: string
+	createdAt?: string,
+	profileCounts?: any
 };
 
 
@@ -118,4 +119,20 @@ export async function insertImpressionURL(data: any, url: string) {
 	};
 
 	return database(TABLE).insert(dataToInsert);
+}
+
+export async function updateImpressionsWithProfileCounts(impressionId: number, profileCounts: JSON) {
+	return database(TABLE)
+			.where({ id: impressionId })
+			.update({ profileCounts: JSON.stringify(profileCounts) });
+}
+
+export async function findProfileCountsByImpressionId(impressionId: number) {
+
+	const result = await database(TABLE)
+			.select('profileCounts')
+			.where({ id: impressionId })
+			.first(); // Using .first() as we are querying by ID, which should be unique
+
+  return result ? result.profileCounts : {};
 }
